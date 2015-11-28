@@ -227,14 +227,6 @@ pixelOrigin {zoom, tileSize, center} =
   in
     point xoff yoff
 
--- pixelOrigin {zoom, size, center} =
---   let
---     {w,h} = size
---     viewHalf = point (w / 2.0) (h / 2.0)
---     tp = tileAtPoint zoom (project center)
---   in
---     roundPoint (tp `subtractPoint` viewHalf)
-
 
 tilePosition : Size -> Point -> Point -> Point
 tilePosition size origin coord =

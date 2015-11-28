@@ -39,5 +39,5 @@ mapView addr map =
                 , ("overflow", "hidden")
                 , ("width", "100%")
                 , ("height", "100%")]
-        , onClick addr]
+        , onDblClick addr]
     [ div [] (List.map itag tiles) ]

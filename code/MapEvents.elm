@@ -8,7 +8,7 @@ import Html.Events exposing (on)
 
 import Maps exposing (..)
 
-type MapAction = MouseClick Point
+type MapAction = DblClick Point
 
 translatePixelPointToLatLng : Map -> Point -> LatLng
 translatePixelPointToLatLng {tileSize, size, zoom, center} {x,y} =
@@ -31,17 +31,20 @@ clickEventDecoder =
 decodeToClickOrDie : Json.Value -> MapAction
 decodeToClickOrDie v =
   case (Json.decodeValue clickEventDecoder v) of
-    Ok p -> Debug.log "click" (MouseClick p)
+    Ok p -> DblClick p
     Err e -> Debug.crash e
 
-onClick : Signal.Address MapAction -> Attribute
-onClick address =
-    on "click" Json.value (decodeToClickOrDie >> (Signal.message address))
+onDblClick : Signal.Address MapAction -> Attribute
+onDblClick address =
+  on "dblclick" Json.value (decodeToClickOrDie >> (Signal.message address))
+
+
+incZoom : ZoomLevel -> ZoomLevel
+incZoom = ((+) 1) >> (min 22)
 
 mapUpdate : MapAction -> Map -> (Map, Effects MapAction)
 mapUpdate action map =
   case action of
-    MouseClick pt -> let
-      ll = Debug.log "check" (translatePixelPointToLatLng map pt)
-   in
-     ({map | center=ll}, Effects.none)
+    DblClick pt -> let ll = translatePixelPointToLatLng map pt
+                     in
+                       ({map | center=ll, zoom=incZoom map.zoom}, Effects.none)
