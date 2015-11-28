@@ -16,9 +16,13 @@ type MapAction = DblClick Point
                | MouseMoved Point
                | MouseDragged Point Point
 
-translatePixelPointToProjPt : Map -> Point -> Point
-translatePixelPointToProjPt {tileSize, size, zoom, center} {x,y} =
+translatePixelPointToProjPt : MapState -> Point -> Point
+translatePixelPointToProjPt {size, zoom, center} {x,y} =
   let
+    --- NEED TO REMOVE
+    -- Do we actually need this here anyway? Seems unnecessary
+    tileSize = {w=256, h=256}
+
     pscale = scale zoom
     dw = size.w / 2.0 / tileSize.w
     dh = size.h / 2.0 / tileSize.h
@@ -29,7 +33,7 @@ translatePixelPointToProjPt {tileSize, size, zoom, center} {x,y} =
   in
     pointAtTile zoom c'
 
-translatePixelPointToLatLng : Map -> Point -> LatLng
+translatePixelPointToLatLng : MapState -> Point -> LatLng
 translatePixelPointToLatLng m p =
   unproject (translatePixelPointToProjPt m p)
 
@@ -83,7 +87,7 @@ dragEvent curPt m =
   case m.events.lastPoint of
     Just prevPt ->
       let
-        dragEvent = Debug.log "drag" (MouseDragged prevPt curPt)
+        dragEvent = MouseDragged prevPt curPt
         newMap = setDragAnchorPoint curPt m
       in
         if (distSq curPt prevPt) > 1.0 then
@@ -91,6 +95,15 @@ dragEvent curPt m =
         else
           (m, Nothing)
     Nothing -> (m, Nothing)
+
+updateState : (MapState -> MapState) -> Map -> Map
+updateState f m =
+    { m | state = f m.state }
+
+updateCenter : Map -> LatLng -> Map
+updateCenter m ll =
+  updateState (\x -> { x | center = ll }) m
+
 
 mapUpdate : MapAction -> Map -> (Map, Effects MapAction)
 mapUpdate action map =
@@ -100,15 +113,15 @@ mapUpdate action map =
     case action of
       MouseDragged p1 p2 ->
         let
-          p1' = translatePixelPointToProjPt map p1
-          p2' = translatePixelPointToProjPt map p2
+          p1' = translatePixelPointToProjPt map.state p1
+          p2' = translatePixelPointToProjPt map.state p2
 
           delta = p2' `subtractPoint` p1'
-          c = project map.center
+          c = project map.state.center
 
           c' = c `subtractPoint` delta
         in
-          noeff { map | center = unproject c' }
+          noeff <| (updateCenter map) <| unproject c'
       MouseDown pt -> noeff (setDragAnchorPoint pt map)
       MouseUp _ -> noeff (stopDragging map)
       MouseMoved pt ->
@@ -117,6 +130,6 @@ mapUpdate action map =
           (m', Nothing) -> noeff m'
       DblClick pt ->
         let
-          ll = translatePixelPointToLatLng map pt
+          ll = translatePixelPointToLatLng map.state pt
         in
-          noeff {map | center=ll, zoom=incZoom map.zoom}
+          noeff <| updateState (\x -> {x | center=ll, zoom=incZoom x.zoom}) map

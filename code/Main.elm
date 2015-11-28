@@ -4,6 +4,7 @@ import Maps.Core exposing (..)
 import Maps.Geography exposing (..)
 import Maps.Render exposing (..)
 import Maps.Events exposing (mapUpdate, MapAction)
+import Maps.Layer as L
 
 import Html exposing (..)
 import Effects exposing (Effects, Never)
@@ -15,10 +16,20 @@ import Effects exposing (Effects, Never)
 import Html.Attributes exposing (style, class, id)
 import Html.Events exposing (onClick)
 
-aMap = { emptyMap | center={lat=51.5216, lng=-0.2527}
-       , size={w=500, h=500}
-       , tileSize={w=256, h=256}
-       , zoom=zoomLevel 9 }
+osmTileLayer =
+  L.createTileLayer
+     { url = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+     , tileSize = {w=256, h=256}
+     , minZoom = zoomLevel 8
+     , maxZoom = zoomLevel 18
+     , opaque = True }
+
+aMap : Map
+aMap = { emptyMap | state = { center={lat=51.5216, lng=-0.2527}
+                            , size={w=500, h=500}
+                            , zoom=zoomLevel 9 }
+       , layers = [osmTileLayer]
+       }
 
 
 view : Signal.Address MapAction -> Map -> Html

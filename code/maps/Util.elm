@@ -19,3 +19,10 @@ pairRange (x1, y1) (x2, y2) =
     mapper a = List.map (\b -> (a,b)) r2
   in
     List.concatMap mapper r1
+
+cycle : List a -> Int -> List a
+cycle items c =
+  if (List.length items) < c then
+    cycle (items ++ items) c
+  else
+    List.take c items
