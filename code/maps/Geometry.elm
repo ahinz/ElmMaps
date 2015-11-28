@@ -1,4 +1,4 @@
-module Geometry where
+module Maps.Geometry where
 
 type alias Transform = { a: Float
                        , b: Float

@@ -1,9 +1,9 @@
 module Web where
 
-import Maps exposing (..)
-import Geography exposing (..)
-import Render exposing (..)
-import MapEvents exposing (mapUpdate, MapAction)
+import Maps.Core exposing (..)
+import Maps.Geography exposing (..)
+import Maps.Render exposing (..)
+import Maps.Events exposing (mapUpdate, MapAction)
 
 import Html exposing (..)
 import Effects exposing (Effects, Never)

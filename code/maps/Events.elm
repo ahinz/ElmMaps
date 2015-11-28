@@ -1,4 +1,4 @@
-module MapEvents where
+module Maps.Events where
 
 import Json.Decode as Json exposing ((:=))
 
@@ -6,9 +6,9 @@ import Effects exposing (Effects, Never)
 import Html exposing (Attribute)
 import Html.Events exposing (onWithOptions)
 
-import Maps exposing (..)
-import Geometry exposing (..)
-import Geography exposing (..)
+import Maps.Core exposing (..)
+import Maps.Geometry exposing (..)
+import Maps.Geography exposing (..)
 
 type MapAction = DblClick Point
                | MouseDown Point

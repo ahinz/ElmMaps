@@ -1,7 +1,7 @@
-module Geography where
+module Maps.Geography where
 
-import Geometry exposing (..)
-import Math exposing (ln, exp, deg2rad, rad2deg)
+import Maps.Geometry exposing (..)
+import Maps.Math exposing (ln, exp, deg2rad, rad2deg)
 
 type ZoomLevel = ZoomLevel Float
 

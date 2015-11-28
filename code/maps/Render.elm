@@ -1,13 +1,12 @@
-module Render where
-
-import Maps exposing (..)
+module Maps.Render where
 
 import Html exposing (..)
 import Html.Attributes exposing (style, class, id, src)
 
-import MapEvents exposing (..)
-import Geometry exposing (..)
-import Geography exposing (..)
+import Maps.Core exposing (..)
+import Maps.Events exposing (..)
+import Maps.Geometry exposing (..)
+import Maps.Geography exposing (..)
 
 
 

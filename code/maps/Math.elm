@@ -1,4 +1,4 @@
-module Math where
+module Maps.Math where
 
 ln : Float -> Float
 ln = logBase e

@@ -1,7 +1,7 @@
-module Maps where
+module Maps.Core where
 
-import Geography exposing (..)
-import Geometry exposing (..)
+import Maps.Geography exposing (..)
+import Maps.Geometry exposing (..)
 
 type alias TileLayer =  { minZoom: Int
                         , maxZoom: Int }
