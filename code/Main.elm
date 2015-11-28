@@ -1,6 +1,7 @@
 module Web where
 
 import Maps exposing (..)
+import Geography exposing (..)
 import Render exposing (..)
 import MapEvents exposing (mapUpdate, MapAction)
 
@@ -17,7 +18,7 @@ import Html.Events exposing (onClick)
 aMap = { emptyMap | center={lat=51.5216, lng=-0.2527}
        , size={w=500, h=500}
        , tileSize={w=256, h=256}
-       , zoom=9 }
+       , zoom=zoomLevel 9 }
 
 
 view : Signal.Address MapAction -> Map -> Html

@@ -6,6 +6,9 @@ import Html exposing (..)
 import Html.Attributes exposing (style, class, id, src)
 
 import MapEvents exposing (..)
+import Geometry exposing (..)
+import Geography exposing (..)
+
 
 
 imgTag : (Point -> Point) -> TileCoord -> Html

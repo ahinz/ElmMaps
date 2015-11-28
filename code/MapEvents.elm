@@ -7,6 +7,8 @@ import Html exposing (Attribute)
 import Html.Events exposing (onWithOptions)
 
 import Maps exposing (..)
+import Geometry exposing (..)
+import Geography exposing (..)
 
 type MapAction = DblClick Point
                | MouseDown Point
@@ -62,7 +64,7 @@ onMouseUp : Signal.Address MapAction -> Attribute
 onMouseUp = decodable "mouseup" MouseUp
 
 incZoom : ZoomLevel -> ZoomLevel
-incZoom = ((+) 1) >> (min 22)
+incZoom (ZoomLevel zl) = zoomLevel (min 22 (truncate (zl + 1)))
 
 updateEventState : (EventState -> EventState) -> Map -> Map
 updateEventState f m =
