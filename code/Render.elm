@@ -5,17 +5,11 @@ import Maps exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (style, class, id, src)
 
+import MapEvents exposing (..)
 
-aMap = { center={lat=51.5216, lng=-0.2527}
-       , size={w=500, h=500}
-       , tileSize={w=256, h=256}
-       , zoom=9 }
 
-origin = pixelOrigin aMap
-pos = tilePosition aMap.tileSize origin
-
-imgTag : TileCoord -> Html
-imgTag {x,y,z,xoff,yoff} =
+imgTag : (Point -> Point) -> TileCoord -> Html
+imgTag pos {x,y,z,xoff,yoff} =
   let
     offset = pos (point (toFloat xoff) (toFloat yoff))
 
@@ -30,13 +24,20 @@ imgTag {x,y,z,xoff,yoff} =
     img [ src isrc
         , istyle ] []
 
-tiles = tilesForView 9 (project aMap.center) aMap.size
+mapView : Signal.Address MapAction -> Map -> Html
+mapView addr map =
+  let
+    tiles = tilesForView map.zoom (project map.center) map.size
 
-mapView : Map -> Html
-mapView {center, size, zoom} =
-  div [ class "map-container"
-      , style [ ("position", "relative")
-              , ("overflow", "hidden")
-              , ("width", "100%")
-              , ("height", "100%")]]
-      [ div [] (List.map imgTag tiles) ]
+    origin = pixelOrigin map
+    pos = tilePosition map.tileSize origin
+
+    itag = imgTag pos
+  in
+    div [ class "map-container"
+        , style [ ("position", "relative")
+                , ("overflow", "hidden")
+                , ("width", "100%")
+                , ("height", "100%")]
+        , onClick addr]
+    [ div [] (List.map itag tiles) ]

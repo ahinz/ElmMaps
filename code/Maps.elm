@@ -84,6 +84,14 @@ transform {a,b,c,d} scale {x,y} =
   in
     point x' y'
 
+untransform : Transform -> Float -> Point -> Point
+untransform {a,b,c,d} scale {x,y} =
+  let
+    x' = (x / scale - b ) / a
+    y' = (y / scale - d ) / c
+  in
+    point x' y'
+
 
 createBounds : Point -> Bounds
 createBounds p = { minp = p
@@ -134,6 +142,9 @@ unproject point =
 scale : ZoomLevel -> Float
 scale zoom = 2.0 ^ (toFloat zoom)
 
+pointAtTile : ZoomLevel -> Point -> Point
+pointAtTile zl p =
+  untransform epsg3857Transform (scale zl) p
 
 tileAtPoint : ZoomLevel -> Point -> Point
 tileAtPoint zl p =
@@ -203,6 +214,9 @@ scalePoint {x,y} {w,h} = point (w * x) (h * y)
 
 subtractPoint : Point -> Point -> Point
 subtractPoint {x,y} p = point (x - p.x) (y - p.y)
+
+addPoint : Point -> Point -> Point
+addPoint {x,y} p = point (x + p.x) (y + p.y)
 
 pixelOrigin : Map -> Point
 pixelOrigin {zoom, tileSize, center} =

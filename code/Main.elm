@@ -2,6 +2,7 @@ module Web where
 
 import Maps exposing (..)
 import Render exposing (..)
+import MapEvents exposing (mapUpdate, MapAction)
 
 import Html exposing (..)
 import Effects exposing (Effects, Never)
@@ -13,25 +14,17 @@ import Effects exposing (Effects, Never)
 import Html.Attributes exposing (style, class, id)
 import Html.Events exposing (onClick)
 
+aMap = { center={lat=51.5216, lng=-0.2527}
+       , size={w=500, h=500}
+       , tileSize={w=256, h=256}
+       , zoom=9 }
 
-type alias Model = { frame: Int }
 
-emptyModel : Model
-emptyModel = { frame = 0 }
-
-type Action = Increment | Decrement
-
-update : Action -> Model -> (Model, Effects Action)
-update action model =
-  case action of
-    Increment -> ({ model | frame = model.frame + 1 }, Effects.none)
-    Decrement -> ({ model | frame = model.frame - 1 }, Effects.none)
-
-view : Signal.Address Action -> Model -> Html
+view : Signal.Address MapAction -> Map -> Html
 view address model =
   div [ class "container" ]
     [ div [ id "map"
-          , mapStyle] [mapView aMap]
+          , mapStyle] [mapView address model]
     ]
 
 mapStyle = style [("width", "500px")
@@ -40,9 +33,9 @@ mapStyle = style [("width", "500px")
 
 
 app  = StartApp.start
-    { update = update
+    { update = mapUpdate
     , view = view
-    , init = (emptyModel, Effects.none)
+    , init = (aMap, Effects.none)
     , inputs = []
     }
 
