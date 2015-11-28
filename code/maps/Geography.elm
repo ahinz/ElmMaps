@@ -62,14 +62,10 @@ epsg3857Transform =
 scale : ZoomLevel -> Float
 scale (ZoomLevel zoom) = 2.0 ^ zoom
 
-scalePoint : Point -> Size -> Point
-scalePoint {x,y} {w,h} = point (w * x) (h * y)
+pointAtTile : ZoomLevel -> Point -> Point
+pointAtTile zl p =
+  untransform epsg3857Transform (scale zl) p
 
-distSq : Point -> Point -> Float
-distSq {x,y} p = (x - p.x)*(x - p.x) + (y - p.y)*(y - p.y)
-
-subtractPoint : Point -> Point -> Point
-subtractPoint {x,y} p = point (x - p.x) (y - p.y)
-
-addPoint : Point -> Point -> Point
-addPoint {x,y} p = point (x + p.x) (y + p.y)
+tileAtPoint : ZoomLevel -> Point -> Point
+tileAtPoint zl p =
+  transform epsg3857Transform (scale zl) p

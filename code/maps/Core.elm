@@ -2,6 +2,7 @@ module Maps.Core where
 
 import Maps.Geography exposing (..)
 import Maps.Geometry exposing (..)
+import Maps.Util as U
 
 type alias TileLayer =  { minZoom: Int
                         , maxZoom: Int }
@@ -26,36 +27,7 @@ emptyMap =  { center = {lat=0, lng=0}
             , tileSize = {w=0, h=0}
             , events = defaultEventState }
 
-
-pointAtTile : ZoomLevel -> Point -> Point
-pointAtTile zl p =
-  untransform epsg3857Transform (scale zl) p
-
-tileAtPoint : ZoomLevel -> Point -> Point
-tileAtPoint zl p =
-  transform epsg3857Transform (scale zl) p
-
 tileSize = 256
-
-range : Int -> Int -> List Int
-range x y =
-  if x > y then
-     []
-  else
-    let
-      zeros = List.repeat (y - x + 1) 0
-    in
-      List.indexedMap (\i _ -> x + i) zeros
-
-pairRange : (Int, Int) -> (Int, Int) -> List (Int, Int)
-pairRange (x1, y1) (x2, y2) =
-  let
-    r1 = range x1 x2
-    r2 = range y1 y2
-
-    mapper a = List.map (\b -> (a,b)) r2
-  in
-    List.concatMap mapper r1
 
 tileBoundsForView : ZoomLevel -> Point -> Size -> Bounds
 tileBoundsForView zl p {w,h} =
@@ -69,12 +41,6 @@ tileBoundsForView zl p {w,h} =
   in
     bounds [p1, p2]
 
-trim : Float -> Float
-trim = truncate >> toFloat
-
-roundPoint : Point -> Point
-roundPoint {x,y} = point (trim x) (trim y)
-
 tilesForView : ZoomLevel -> Point -> Size -> List TileCoord
 tilesForView zl center s =
   let
@@ -86,7 +52,7 @@ tilesForView zl center s =
     xmax = truncate maxp.x
     ymax = truncate maxp.y
 
-    pairs = pairRange (xmin, ymin) (xmax, ymax)
+    pairs = U.pairRange (xmin, ymin) (xmax, ymax)
   in
     List.map (\(x,y) -> { x=x
                         , y=y

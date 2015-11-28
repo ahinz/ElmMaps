@@ -63,3 +63,21 @@ bounds x = case x of
                  baseBounds = createBounds x
                in
                  List.foldl extendBounds baseBounds xs
+
+scalePoint : Point -> Size -> Point
+scalePoint {x,y} {w,h} = point (w * x) (h * y)
+
+distSq : Point -> Point -> Float
+distSq {x,y} p = (x - p.x)*(x - p.x) + (y - p.y)*(y - p.y)
+
+subtractPoint : Point -> Point -> Point
+subtractPoint {x,y} p = point (x - p.x) (y - p.y)
+
+addPoint : Point -> Point -> Point
+addPoint {x,y} p = point (x + p.x) (y + p.y)
+
+trim : Float -> Float
+trim = truncate >> toFloat
+
+roundPoint : Point -> Point
+roundPoint {x,y} = point (trim x) (trim y)
