@@ -14,7 +14,7 @@ import Effects exposing (Effects, Never)
 import Html.Attributes exposing (style, class, id)
 import Html.Events exposing (onClick)
 
-aMap = { center={lat=51.5216, lng=-0.2527}
+aMap = { emptyMap | center={lat=51.5216, lng=-0.2527}
        , size={w=500, h=500}
        , tileSize={w=256, h=256}
        , zoom=9 }

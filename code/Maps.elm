@@ -27,11 +27,23 @@ type alias TileLayer =  { minZoom: Int
 
 type alias TileCoord = { x: Int, y: Int, z: Int, xoff: Int, yoff: Int }
 
+type alias EventState = { lastPoint: Maybe Point }
+
 type alias Map = { center: LatLng
                  , size: Size
                  , zoom: ZoomLevel
-                 , tileSize: Size}
+                 , tileSize: Size
+                 , events: EventState }
 
+defaultEventState : EventState
+defaultEventState = { lastPoint = Nothing }
+
+emptyMap : Map
+emptyMap =  { center = {lat=0, lng=0}
+            , size = {w=0, h=0}
+            , zoom = 0
+            , tileSize = {w=0, h=0}
+            , events = defaultEventState }
 
 earthRadius : Float
 earthRadius = 6378137.0
@@ -211,6 +223,9 @@ tilesForView zl center s =
 
 scalePoint : Point -> Size -> Point
 scalePoint {x,y} {w,h} = point (w * x) (h * y)
+
+distSq : Point -> Point -> Float
+distSq {x,y} p = (x - p.x)*(x - p.x) + (y - p.y)*(y - p.y)
 
 subtractPoint : Point -> Point -> Point
 subtractPoint {x,y} p = point (x - p.x) (y - p.y)

@@ -24,6 +24,11 @@ imgTag pos {x,y,z,xoff,yoff} =
     img [ src isrc
         , istyle ] []
 
+dontSelectMeStyles = [ ("-webkit-user-select", "none")
+                     , ("-moz-user-select", "none")
+                     , ("user-select", "none")
+                     , ("-webkit-user-drag", "none")]
+
 mapView : Signal.Address MapAction -> Map -> Html
 mapView addr map =
   let
@@ -35,9 +40,12 @@ mapView addr map =
     itag = imgTag pos
   in
     div [ class "map-container"
-        , style [ ("position", "relative")
-                , ("overflow", "hidden")
-                , ("width", "100%")
-                , ("height", "100%")]
-        , onDblClick addr]
+        , style ([ ("position", "relative")
+                 , ("overflow", "hidden")
+                 , ("width", "100%")
+                 , ("height", "100%")] ++ dontSelectMeStyles)
+        , onDblClick addr
+        , onMouseMoved addr
+        , onMouseUp addr
+        , onMouseDown addr]
     [ div [] (List.map itag tiles) ]
