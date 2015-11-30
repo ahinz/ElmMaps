@@ -19,14 +19,9 @@ type MapAction = DblClick Point
 translatePixelPointToProjPt : MapState -> Point -> Point
 translatePixelPointToProjPt {size, zoom, center} {x,y} =
   let
-    --- NEED TO REMOVE
-    -- Do we actually need this here anyway? Seems unnecessary
-    tileSize = {w=256, h=256}
-
-    pscale = scale zoom
-    dw = size.w / 2.0 / tileSize.w
-    dh = size.h / 2.0 / tileSize.h
-    d = (point (x / tileSize.w - dw) (y / tileSize.w - dh))
+    dw = size.w / 2.0
+    dh = size.h / 2.0
+    d = (point (x - dw) (y - dh))
     c = (tileAtPoint zoom (project center))
 
     c' = d `addPoint` c

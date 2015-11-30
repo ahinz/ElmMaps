@@ -53,11 +53,14 @@ tileBoundsForView : ZoomLevel -> Size -> Point -> Size -> Bounds
 tileBoundsForView zl tileSize p {w,h} =
   let
     {x,y} = roundPoint (tileAtPoint zl p)
-    w' = toFloat (truncate (w / tileSize.w / 2.0 + 0.5))
-    h' = toFloat (truncate (h / tileSize.h / 2.0 + 0.5))
+    x' = toFloat <| truncate (x / tileSize.w)
+    y' = toFloat <| truncate (y / tileSize.h)
 
-    p1 = point (x - w') (y - h')
-    p2 = point (x + w') (y + h')
+    w' = toFloat (truncate (w / tileSize.w + 0.5))
+    h' = toFloat (truncate (h / tileSize.h + 0.5))
+
+    p1 = point (x' - w') (y' - h')
+    p2 = point (x' + w') (y' + h')
   in
     bounds [p1, p2]
 
@@ -81,21 +84,25 @@ tilesForView zl tileSize center s =
                         , yoff=y-ymin}) pairs
 
 
-pixelOrigin : M.MapState -> Size -> Point
-pixelOrigin {zoom, center} tileSize =
+pixelOrigin : M.MapState -> Point
+pixelOrigin {zoom, center, size} =
   let
     {x,y} = tileAtPoint zoom (project center)
-    xoff = (x - trim x) * tileSize.w
-    yoff = (y - trim y) * tileSize.h
+    xoff = x - size.w / 2.0
+    yoff = y - size.h / 2.0
   in
     point xoff yoff
 
-tileOffsetPoint : TileCoord -> Point
-tileOffsetPoint {xoff, yoff} = point (toFloat xoff) (toFloat yoff)
+tilePoint : Size -> TileCoord -> Point
+tilePoint {w, h} {x, y} =
+  point ((toFloat x) * w) ((toFloat y) * h)
 
-tilePosition : Size -> Point -> TileCoord -> Point
-tilePosition size origin coord =
-  ((tileOffsetPoint coord) `scalePoint` size) `subtractPoint` origin
+tilePosition : ZoomLevel -> Size -> Point -> TileCoord -> Point
+tilePosition zl s origin coord =
+  let
+    coordPt = tilePoint s coord
+  in
+    coordPt `subtractPoint` origin
 
 px : Float -> String
 px f = (toString <| truncate <| f) ++ "px"
@@ -116,11 +123,11 @@ renderTileLayer : TileLayer -> M.MapState -> Html
 renderTileLayer {url, tileSize, minZoom, maxZoom} map =
   let
     c = project map.center
-    origin = pixelOrigin map tileSize
+    origin = pixelOrigin map
 
     tiles = tilesForView map.zoom tileSize c map.size
 
-    pos = tilePosition tileSize origin
+    pos = tilePosition map.zoom tileSize origin
 
     positions = List.map pos tiles
     urls = tilesToUrls url tiles

@@ -60,7 +60,7 @@ epsg3857Transform =
     , d = 0.5}
 
 scale : ZoomLevel -> Float
-scale (ZoomLevel zoom) = 2.0 ^ zoom
+scale (ZoomLevel zoom) = 256 * (2.0 ^ zoom)
 
 pointAtTile : ZoomLevel -> Point -> Point
 pointAtTile zl p =
