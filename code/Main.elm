@@ -5,9 +5,13 @@ import Maps.Geography exposing (..)
 import Maps.Render exposing (..)
 import Maps.Events exposing (mapUpdate, MapAction)
 import Maps.Layer as L
+import Maps.Vector as V
 
 import Html exposing (..)
 import Effects exposing (Effects, Never)
+
+import Graphics.Collage as GC
+import Color as C
 
 import StartApp
 
@@ -24,11 +28,17 @@ osmTileLayer =
      , maxZoom = zoomLevel 18
      , opaque = True }
 
+fillColor = C.rgba 255 0 51 0.5
+aCircle = V.createCircle {lat=51.508, lng=-0.11} 500 (GC.filled fillColor)
+
+circleLayer = V.shapesToLayer [aCircle]
+
+
 aMap : Map
 aMap = { emptyMap | state = { center={lat=51.5216, lng=-0.2527}
                             , size={w=500, h=500}
                             , zoom=zoomLevel 9 }
-       , layers = [osmTileLayer]
+       , layers = [circleLayer, osmTileLayer]
        }
 
 
