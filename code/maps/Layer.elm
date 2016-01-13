@@ -9,7 +9,7 @@ import Maps.Geometry exposing (..)
 import Maps.Geography exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (style, class, id, src)
+import Html.Attributes exposing (style, class, id, src, key)
 
 
 type alias TileLayer =
@@ -107,8 +107,8 @@ tilePosition zl s origin coord =
 px : Float -> String
 px f = (toString <| truncate <| f) ++ "px"
 
-createTileImg : Size -> String -> Point -> Html
-createTileImg {w,h} url {x,y} =
+createTileImg : Size -> String -> Point -> TileCoord -> Html
+createTileImg {w,h} url {x,y} tileCoord =
   let
     istyle = style [ ("width", px w)
                    , ("height", px h)
@@ -117,6 +117,10 @@ createTileImg {w,h} url {x,y} =
                    , ("top", px y)]
   in
     img [ src url
+        , key <| "point:"
+                ++ (toString <| tileCoord.x) ++ ":"
+                ++ (toString <| tileCoord.y) ++ ":"
+                ++ (toString <| tileCoord.z)
         , istyle ] []
 
 renderTileLayer : TileLayer -> M.MapState -> Html
@@ -132,7 +136,7 @@ renderTileLayer {url, tileSize, minZoom, maxZoom} map =
     positions = List.map pos tiles
     urls = tilesToUrls url tiles
 
-    imgs = List.map2 (createTileImg tileSize) urls positions
+    imgs = List.map3 (createTileImg tileSize) urls positions tiles
   in
     div [] imgs
 
