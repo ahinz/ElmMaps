@@ -3,9 +3,10 @@ module Web where
 import Maps.Core exposing (..)
 import Maps.Geography exposing (..)
 import Maps.Render exposing (..)
-import Maps.Events exposing (mapUpdate, MapAction)
+import Maps.Events exposing (mapUpdate)
 import Maps.Layer as L
 import Maps.Vector as V
+import Maps.Marker as Mk
 
 import Html exposing (..)
 import Effects exposing (Effects, Never)

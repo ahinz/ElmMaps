@@ -13,8 +13,15 @@ type alias MapState =
   , size: Size
   , zoom: ZoomLevel }
 
+type MapAction = DblClick Point
+               | MouseDown Point
+               | MouseUp Point
+               | MouseMoved Point
+               | MouseDragged Point Point
+               -- | LayerClick LatLng Point
+
 type alias Layer =
-  { renderer: MapState -> Html
+  { renderer: MapState -> Signal.Address MapAction -> Html
   , opaque: Bool }
 
 type alias Map = { state: MapState

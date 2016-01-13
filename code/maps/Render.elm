@@ -14,11 +14,8 @@ mapView : Signal.Address MapAction -> Map -> Html
 mapView addr map =
   let
     st = map.state
-    layers = List.foldl (\layer (divs, stop) ->
-                           if stop then
-                             (divs, True)
-                           else
-                             ((layer.renderer st) :: divs, layer.opaque)) ([], False) map.layers
+    layers = List.reverse map.layers |>
+             List.map (\layer -> layer.renderer st addr)
   in
     div [ class "map-container"
         , style [ ("position", "relative")
@@ -29,4 +26,4 @@ mapView addr map =
         , onMouseMoved addr
         , onMouseUp addr
         , onMouseDown addr]
-    <| fst layers
+    <| layers

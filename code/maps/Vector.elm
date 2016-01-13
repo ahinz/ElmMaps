@@ -39,8 +39,8 @@ position zl offset formShape =
   in
     GC.move (dx, dy) form
 
-shapesToLayerRenderer : List VShape -> M.MapState -> Html
-shapesToLayerRenderer shapes {center, size, zoom} =
+shapesToLayerRenderer : List VShape -> M.MapState -> Signal.Address M.MapAction -> Html
+shapesToLayerRenderer shapes {center, size, zoom} _ =
   let
     w = round size.w
     h = round size.h

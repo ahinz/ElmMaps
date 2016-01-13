@@ -10,11 +10,6 @@ import Maps.Core exposing (..)
 import Maps.Geometry exposing (..)
 import Maps.Geography exposing (..)
 
-type MapAction = DblClick Point
-               | MouseDown Point
-               | MouseUp Point
-               | MouseMoved Point
-               | MouseDragged Point Point
 
 translatePixelPointToProjPt : MapState -> Point -> Point
 translatePixelPointToProjPt {size, zoom, center} {x,y} =

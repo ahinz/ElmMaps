@@ -123,8 +123,8 @@ createTileImg {w,h} url {x,y} tileCoord =
                 ++ (toString <| tileCoord.z)
         , istyle ] []
 
-renderTileLayer : TileLayer -> M.MapState -> Html
-renderTileLayer {url, tileSize, minZoom, maxZoom} map =
+renderTileLayer : TileLayer -> M.MapState -> Signal.Address M.MapAction -> Html
+renderTileLayer {url, tileSize, minZoom, maxZoom} map _ =
   let
     c = project map.center
     origin = pixelOrigin map
